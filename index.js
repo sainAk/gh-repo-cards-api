@@ -19,54 +19,54 @@ async function hitGithub(request) {
         return `repo${index + 1}:repository(owner: "${owner}", name: "${repoName}") { ...repoProperties }`;
     })
 
-    const query = `
-fragment repoProperties on Repository {
-    nameWithOwner
-    description
-    openGraphImageUrl
-    homepageUrl
-    forkCount
-    stargazerCount
-    updatedAt
-    licenseInfo {
-        spdxId
-    }
-    collaborators {
-        totalCount
-    }
-    issues(states:OPEN) {
-        totalCount
-    }
-    languages(first: 100) {
-        totalSize
-        edges {
-            size
-            node {
-                name
-                color
+    let query = `
+    fragment repoProperties on Repository {
+        nameWithOwner
+        description
+        openGraphImageUrl
+        homepageUrl
+        forkCount
+        stargazerCount
+        updatedAt
+        licenseInfo {
+            spdxId
+        }
+        collaborators {
+            totalCount
+        }
+        issues(states:OPEN) {
+            totalCount
+        }
+        languages(first: 100) {
+            totalSize
+            edges {
+                size
+                node {
+                    name
+                    color
+                }
+            }
+        }
+        repositoryTopics(first: 10) {
+            nodes {
+                topic {
+                    name
+                }
             }
         }
     }
-    repositoryTopics(first: 10) {
-        nodes {
-            topic {
-                name
-            }
+    {
+        ${reposToQuery.join("\n        ")}
+        rateLimit {
+            limit
+            cost
+            remaining
+            resetAt
         }
     }
-}
-{
-    ${reposToQuery.join("\n    ")}
-    rateLimit {
-        limit
-        cost
-        remaining
-        resetAt
-    }
-}
-`;
+    `;
 
-    let requestHeaders = request.headers;
+    query = query.replace(/^( {4})/gm, '');
     let newRequestHeaders = new Headers(requestHeaders);
 
     const headersToDelete = ['content-length', 'content-encoding'];
