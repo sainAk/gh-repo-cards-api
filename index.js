@@ -23,10 +23,28 @@ async function hitGithub(request) {
 fragment repoProperties on Repository {
     nameWithOwner
     description
-    languages(first: 10) {
-        nodes {
-            name
-            color
+    openGraphImageUrl
+    homepageUrl
+    forkCount
+    stargazerCount
+    updatedAt
+    licenseInfo {
+        spdxId
+    }
+    collaborators {
+        totalCount
+    }
+    issues(states:OPEN) {
+        totalCount
+    }
+    languages(first: 100) {
+        totalSize
+        edges {
+            size
+            node {
+                name
+                color
+            }
         }
     }
     repositoryTopics(first: 10) {
