@@ -1,0 +1,10 @@
+compatibility_date = "2022-01-15"
+name = "gh-repo-info"
+type = "javascript"
+
+workers_dev = true
+
+[vars]
+GITHUB_TOKEN = ""
+REPO_LIMIT = "10"
+

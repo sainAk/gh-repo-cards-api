@@ -1,8 +1,10 @@
 const githubApiUrl = 'https://api.github.com/graphql';
 const repoLimit = REPO_LIMIT ?? 20;
-const githubToken = GITHUB_TOKEN ?? '';
+const githubToken = GITHUB_TOKEN;
 
 async function hitGithub(request) {
+
+    let requestHeaders = request.headers;
 
     let repos = [];
     try {
@@ -30,9 +32,6 @@ async function hitGithub(request) {
         updatedAt
         licenseInfo {
             spdxId
-        }
-        collaborators {
-            totalCount
         }
         issues(states:OPEN) {
             totalCount
@@ -67,13 +66,12 @@ async function hitGithub(request) {
     `;
 
     query = query.replace(/^( {4})/gm, '');
-    let newRequestHeaders = new Headers(requestHeaders);
 
+    let newRequestHeaders = new Headers(requestHeaders);
     const headersToDelete = ['content-length', 'content-encoding'];
     headersToDelete.forEach(header => {
         newRequestHeaders.delete(header);
     })
-
     newRequestHeaders.set('Host', githubApiUrl);
     newRequestHeaders.set('Content-Type', 'application/json');
     newRequestHeaders.set('Accept', '*/*');
